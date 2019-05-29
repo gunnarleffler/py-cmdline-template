@@ -18,7 +18,7 @@ PARAMETERS
 ==========
 '''
 
-import sys, os, datetime, requests, re, random, argparse, sqlite3, yaml, json
+import sys, os, datetime, requests, re, random, argparse, sqlite3, yaml, json, crayons
 import dateutil.parser as dateparser
 from collections import OrderedDict
 
@@ -121,6 +121,7 @@ def parseDate(s):
 # main()
 #--------------------------------------------------------------------------------
 def main ():
+  print (f"{crayons.red('Type')} {crayons.blue('something.')}")
   inf = sys.stdin
   if args.filename:
     inf = open(args.filename, "r")

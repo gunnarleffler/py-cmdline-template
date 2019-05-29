@@ -1,0 +1,4 @@
+#I like to have my .venv in the project directory
+#This .gitignore will ensure pipenv uses this, but nothing gets committed to repo.
+*
+!.gitignore
