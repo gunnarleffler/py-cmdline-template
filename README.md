@@ -1,14 +1,17 @@
 # Python Command line Template
 
-version 1.0.1
+version 1.1.0
 
 
 This is a simple project which contains the following templates:
 
 `cmdline.py` - A simple command line script
+
 `package/`   - A bare-bones package structure
+
 `test/`      - A unit test example
 
+Contains various examples that I sometimes forget and need when writing a quick script.
 Perfect if you are in a polyglot environment, use python occasionally, and need to have a launchpad to get ish done in Python on the command line.
 
 ## Getting Started
