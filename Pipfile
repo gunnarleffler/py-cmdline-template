@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
 
 [packages]
 pyyaml = "*"
@@ -13,6 +13,7 @@ sqlalchemy = "*"
 python-dateutil = "*"
 requests = "*"
 crayons = "*"
+python-dotenv = "*"
 
 [scripts]
 start = "python3 cmdline.py"

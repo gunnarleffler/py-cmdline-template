@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 #!/usr/local/bin/python3
 helpstr = '''
-python3 starter command line template v1.1.0
-05/28/2019
+python3 starter command line template v1.2.0
+09/04/2020
 This program contains stuff to quick-start a python project.
 
 FORMATTING
@@ -23,8 +23,15 @@ import logging, sqlite3, yaml, json, crayons
 import dateutil.parser as dateparser
 from collections import OrderedDict
 
-current_dir = os.path.dirname(__file__)
+current_dir = os.path.dirname(os.path.abspath(__file__))
 config_dir = os.path.join(current_dir, "..", "config")
+
+# loading configuration from a .env file
+#--------------------------------------------------------------------------------
+from dotenv import load_dotenv
+load_dotenv()
+#load_dotenv("../.env")
+db_user = os.getenv("DB_USER")
 
 #An example of a class
 #--------------------------------------------------------------------------------
@@ -42,6 +49,70 @@ class Shape:
     return self.x * self.y
 
 
+# SQLAlchemy
+#--------------------------------------------------------------------------------
+import sqlalchemy as db
+from sqlalchemy.engine import create_engine
+from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.orm import Session
+
+# SQLALCHEMY_DATABASE_URI syntax:
+# postgresql://user:pass@localhost/mydatabase
+# mysql://user:pass@localhost/mydatabase
+# sqlite:////absolute/path/to/foo.db
+
+database_uri = "sqlite:///"+os.path.join(current_dir,"test.db")
+engine = db.create_engine(database_uri)
+session = Session(engine)
+
+# pull metadata of a table
+'''
+metadata = db.MetaData(bind=engine)
+metadata.reflect(only=['users'])
+'''
+
+# setup ORM Base from table metadata
+'''
+Base = automap_base(metadata=metadata)
+Base.prepare()
+'''
+
+# Declarative Base
+from sqlalchemy import Column, ForeignKey, Integer, String, exists
+from sqlalchemy.ext.declarative import declarative_base
+Base = declarative_base()
+
+class User(Base):
+  __tablename__ = 'flags'
+  name = Column(String(), primary_key=True)
+  fullname = Column(String())
+  nickname = Column(String())
+  status = Column(String())
+  date = Column(String())
+
+  def __repr__(self):
+    return "<User(name= %s, status = %s, message = %s)>" % (
+        self.name, self.status, self.fullname)
+
+def rawSQL():
+  # Backend neutral escaping: works both on MySQL and PostgreSQL
+  engine.execute(
+    db.text('SELECT name FROM users WHERE name = :name'),
+    name='Demo'
+  )
+
+def addToDB():
+  ed_user = User(name='ed', fullname='Ed Jones', nickname='edsnickname')
+  session.add(ed_user)
+  session.commit()
+
+def queries ():
+  User = Base.classes.User
+  for user in session.query(User).all():
+    print (user)
+
+  
+
 # SQLite
 #--------------------------------------------------------------------------------
 def writeToDB(fdata, dbpath=None):
@@ -55,7 +126,7 @@ def writeToDB(fdata, dbpath=None):
   con.close()
 
 
-def getFromDB(fkeys, sortkeys=False, sanitize=False, id=None, dbpath=None):
+def getFromDB(fkeys, sortkeys=False, id=None, dbpath=None):
   con = sqlite3.connect(dbpath)
   cur = con.cursor()
   if sortkeys:
@@ -67,12 +138,6 @@ def getFromDB(fkeys, sortkeys=False, sanitize=False, id=None, dbpath=None):
   else:
     cur.execute(cmd)
   columns = cur.fetchall()
-  if sanitize == True:
-    for i in range(len(columns)):
-      row = []
-      for j in range(len(columns[i])):
-        row.append(escape(columns[i][j]))
-      columns[i] = row
   con.close()
   return columns
 
