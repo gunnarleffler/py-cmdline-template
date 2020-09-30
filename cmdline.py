@@ -148,6 +148,21 @@ def readFile(path):
   with open(path) as infile:
     return infile.read()
 
+def readCSV(path):
+  with open(path) as infile:
+    reader = csv.reader(infile)
+    return (list(reader))
+
+def readCSVdict(path):
+  with open(path, 'r') as infile:
+    return (list(csv.DictReader(infile)))
+
+def writeCSVdict(data, path):
+  with open(path, 'w') as outfile:
+    keys = data[0].keys()
+    dict_writer = csv.DictWriter(outfile, keys)
+    dict_writer.writeheader()
+    dict_writer.writerows(data)
 
 def writeYAML(data, path):
   with open(path, 'w') as outfile:
