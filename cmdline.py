@@ -240,7 +240,7 @@ def main(args):
 p = argparse.ArgumentParser(
     description=helpstr, formatter_class=argparse.RawDescriptionHelpFormatter)
 p.add_argument('-v', '--verbose', action='store_true', help='Work verbosely')
-p.add_argument('-f', '--filename', help='Input filename')
+p.add_argument('-f', '--filename', help='Input filename', required=True)
 args = p.parse_args()
 
 if __name__ == "__main__":
