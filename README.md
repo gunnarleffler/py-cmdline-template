@@ -1,11 +1,13 @@
 # Python Command line Template
 
-version 1.1.0
+version 1.2.0
 
 
 This is a simple project which contains the following templates:
 
-`cmdline.py` - A simple command line script
+`minimal.py` - A simple command line script
+
+`cmdline.py` - A command line script template replete with examples
 
 `package/`   - A bare-bones package structure
 
@@ -32,9 +34,6 @@ A step by step series of examples that tell you how to get a development env run
 
 I format this with yapf chromuim style using 2 spaces instead of tabs. Yep 2 spaces, come at me bro ;)
 
-## Deployment
-
-TBD.
 
 ## Built With
 
