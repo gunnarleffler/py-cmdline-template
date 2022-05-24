@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [requires]
-python_version = "3.8"
+python_version = "3"
 
 [packages]
 pyyaml = "*"
@@ -19,7 +19,7 @@ python-dotenv = "*"
 start = "python3 cmdline.py"
 
 [dev-packages]
-nose = '*'
-unittest2 = {version = ">=1.0,<3.0",markers = "python_version < '2.7.9' or (python_version >= '3.0' and python_version < '3.4')"}
+nose = "*"
+unittest2 = "*"
 yapf = "*"
 pylint = "*"
