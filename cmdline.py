@@ -62,28 +62,47 @@ from sqlalchemy.orm import Session
 # sqlite:////absolute/path/to/foo.db
 
 database_uri = "sqlite:///"+os.path.join(current_dir,"test.db")
-engine = db.create_engine(database_uri)
+engine = create_engine(database_uri)
 session = Session(engine)
 
-# pull metadata of a table
+# pull metadata of a table and automap (sqlalchemy 2.0)
 '''
-metadata = db.MetaData(bind=engine)
-metadata.reflect(only=['users'])
+Base = automap_base()
+
+# engine, suppose it has two tables 'user' and 'address' set up
+engine = create_engine("sqlite:///mydatabase.db")
+
+# reflect the tables
+Base.prepare(autoload_with=engine)
 '''
 
 # setup ORM Base from table metadata
 '''
-Base = automap_base(metadata=metadata)
-Base.prepare()
+# mapped classes are now created with names by default
+# matching that of the table name.
+User = Base.classes.user
+Address = Base.classes.address
+
+session = Session(engine)
+
+# rudimentary relationships are produced
+session.add(Address(email_address="foo@bar.com", user=User(name="foo")))
+session.commit()
+
+# collection-based relationships are by default named
+# "<classname>_collection"
+u1 = session.query(User).first()
+print (u1.address_collection)
 '''
 
 # Declarative Base
 from sqlalchemy import Column, ForeignKey, Integer, String, exists
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
+import sqlalchemy as db
 Base = declarative_base()
 
 class User(Base):
-  __tablename__ = 'flags'
+  __tablename__ = 'users'
   name = Column(String(), primary_key=True)
   fullname = Column(String())
   nickname = Column(String())
@@ -111,7 +130,6 @@ def queries ():
   for user in session.query(User).all():
     print (user)
 
-  
 
 # SQLite
 #--------------------------------------------------------------------------------
