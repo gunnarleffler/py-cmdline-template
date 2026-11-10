@@ -72,8 +72,9 @@ target/
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# pyenv
-.python-version
+# Tool caches and local environments
+.ruff_cache/
+.venv/
 
 # celery beat schedule file
 celerybeat-schedule

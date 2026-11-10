@@ -1,36 +1,49 @@
 #!/usr/bin/env python3
-import sys, os, json, requests, argparse
+"""A dependency-free command line starter."""
 
-helpstr = """
-minimal python commandline template for bare bones projects
-"""
+import argparse
+import os
+import sys
 
 
-# yapf: disable
 class Colors:
-  black = "\033[0;30m";red = "\033[0;31m";green = "\033[0;32m";brown = "\033[0;33m";blue = "\033[0;34m";purple = "\033[0;35m";cyan = "\033[0;36m";lightgray = "\033[0;37m"
-  darkgray = "\033[1;30m";lightred = "\033[1;31m";lightgreen = "\033[1;32m";yellow = "\033[1;33m";lightblue = "\033[1;34m";lightpurple = "\033[1;35m";lightcyan = "\033[1;36m"
-  white = "\033[1;37m";bold = "\033[1m";faint = "\033[2m";italic = "\033[3m";underline = "\033[4m";blink = "\033[5m";negative = "\033[7m";crossed = "\033[9m";end = "\033[0m"
-# yapf: enable
+  # fmt: off
+  black = '\033[0;30m'; red = '\033[0;31m'; green = '\033[0;32m'; brown = '\033[0;33m'; blue = '\033[0;34m'; purple = '\033[0;35m'; cyan = '\033[0;36m'; lightgray = '\033[0;37m'  # noqa: E501, E702
+  darkgray = '\033[90m'; lightred = '\033[91m'; lightgreen = '\033[92m'; yellow = '\033[93m'; lightblue = '\033[94m'; lightpurple = '\033[95m'; lightcyan = '\033[96m'  # noqa: E501, E702
+  white = '\033[97m'; bold = '\033[1m'; faint = '\033[2m'; italic = '\033[3m'; underline = '\033[4m'; blink = '\033[5m'; negative = '\033[7m'; crossed = '\033[9m'; end = '\033[0m'  # noqa: E501, E702
+  magenta = purple; lightmagenta = lightpurple  # noqa: E702
+  # fmt: on
+
+  @classmethod
+  def colorize(cls, text, color, *, stream=None):
+    """Accept a name like 'green' or an ANSI constant; respect NO_COLOR."""
+    code = getattr(cls, color, None)
+    if not isinstance(code, str):
+      code = color if color in vars(cls).values() else None
+    if code is None:
+      raise ValueError(f'Unknown color: {color!r}')
+    stream = sys.stdout if stream is None else stream
+    enabled = stream.isatty() and 'NO_COLOR' not in os.environ
+    return f'{code}{text}{cls.end}' if enabled else text
 
 
-def main(args):
+# Export a short form while keeping the implementation with the palette.
+colorize = Colors.colorize
+
+
+def main(argv: list[str] | None = None) -> int:
+  parser = argparse.ArgumentParser(description=__doc__)
+  parser.add_argument('name', nargs='?', default='world', help='Who to greet')
+  parser.add_argument('--color', action='store_true', help='Force ANSI colors')
+  args = parser.parse_args(argv)
+  message = f'Hello, {args.name}!'
   print(
-      f"{Colors.lightgreen}[+]{Colors.end} {Colors.white}doing something.{Colors.end}"
+    f'{Colors.lightgreen}{message}{Colors.end}'
+    if args.color
+    else colorize(message, 'lightgreen')
   )
-  inf = sys.stdin
-  if args.filename:
-    inf = open(args.filename, "r")
-  for line in inf:
-    print(line)
+  return 0
 
 
-# Parse Arguements
-#--------------------------------------------------------------------------------
-p = argparse.ArgumentParser(
-    description=helpstr, formatter_class=argparse.RawDescriptionHelpFormatter)
-p.add_argument('-f', '--filename', help='Input filename', required=True)
-args = p.parse_args()
-
-if __name__ == "__main__":
-  sys.exit(main(args))
+if __name__ == '__main__':
+  raise SystemExit(main())
